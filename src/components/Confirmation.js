@@ -3,7 +3,7 @@ import { verifyCode, sendVerificationCode } from '../services/api';
 import styled from 'styled-components';
 
 const Confirmation = ({ setStep, phoneNumber }) => {
-  const [code, setCode] = useState('');
+  const [code, setCode] = useState(['', '', '', '', '', '']);
   const [resendAvailable, setResendAvailable] = useState(false);
   const [timer, setTimer] = useState(15);
 
@@ -25,19 +25,25 @@ const Confirmation = ({ setStep, phoneNumber }) => {
   }, []);
 
   const handleInputChange = (index, value) => {
-    if (value.length === 1 && index < inputRefs.current.length - 1) {
+    const newCode = [...code];
+    newCode[index] = value.slice(-1);
+    setCode(newCode);
+
+    if (value === '' && index > 0) {
+      inputRefs.current[index - 1].focus(); 
+    } else if (value.length === 1 && index < inputRefs.current.length - 1) {
       inputRefs.current[index + 1].focus();
     }
-    setCode(value);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const isValid = await verifyCode(phoneNumber, code);
+    const isValid = await verifyCode(phoneNumber, code.join('')); 
     if (isValid === 200) {
       setStep(3);
     } else {
       alert('Código inválido');
+      setCode(['', '', '', '', '', '']);
     }
   };
 
@@ -45,19 +51,25 @@ const Confirmation = ({ setStep, phoneNumber }) => {
     await sendVerificationCode(phoneNumber);
     setResendAvailable(false);
     setTimer(15);
+    setCode(['', '', '', '', '', '']); 
   };
 
   return (
     <Form onSubmit={handleSubmit}>
       <Label>Ingresa el código:</Label>
       <CodeInputContainer>
-        {Array.from({ length: 6 }, (_, index) => (
+        {code.map((value, index) => (
           <CodeInput
             key={index}
             ref={ref => (inputRefs.current[index] = ref)}
             type="text"
-            value={code[index] || ''}
+            value={value}
             onChange={(e) => handleInputChange(index, e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Backspace' && value === '' && index > 0) {
+                inputRefs.current[index - 1].focus(); 
+              }
+            }}
             maxLength={1}
             required
           />

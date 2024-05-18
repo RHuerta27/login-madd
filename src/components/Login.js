@@ -20,7 +20,7 @@ const Login = ({ setStep, setPhoneNumber }) => {
       <Label>Inicia sesión con tu número telefónico</Label>
       <PhoneInputWrapper>
         <PhoneInput
-          country={'mx'} // Define el país predeterminado
+          country={'mx'}
           value={phone}
           onChange={phone => setPhone(phone)}
           inputStyle={{

@@ -4,10 +4,7 @@ import styled from 'styled-components';
 const Home = () => {
   return (
     <Container>
-      <Title>Bienvenido - Pagina de inicio</Title>
-      <Content>
-        {/* Contenido adicional aquí */}
-      </Content>
+      <Title>Bienvenido - Página de inicio</Title>
     </Container>
   );
 };
@@ -23,10 +20,6 @@ const Title = styled.h1`
   color: #333;
   text-align: center;
   margin-bottom: 20px;
-`;
-
-const Content = styled.div`
-  /* Estilos para el contenido adicional, si es necesario */
 `;
 
 export default Home;
